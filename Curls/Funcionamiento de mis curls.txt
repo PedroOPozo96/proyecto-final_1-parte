@@ -1,0 +1,19 @@
+- Anotación: Todo mi proyecto lo he realizado en Windows y por lo tanto para utilizar el comando curl he tenido que usar en la consola Powershell
+y por eso lo vemos como curl.exe
+
+
+ 1ª petición curl: Esta petición hace una búsqueda sobre el libro 1984
+
+curl.exe -X GET "https://www.googleapis.com/books/v1/volumes?q=intitle:1984&key=AIzaSyD3783cwb-UwTnNx1_5U7_JNBGKHHc8TTg"
+
+
+#Segunda petición curl: esta petición hace una búsqueda sobre los autoress de los libros.
+
+curl.exe -X GET "https://www.googleapis.com/books/v1/volumes?q=inauthor:autor&key=AIzaSyD3783cwb-UwTnNx1_5U7_JNBGKHHc8TTg"
+
+#Tercera petición curl: esta petición busca sobre los genéros de ficción de los libros.
+
+curl.exe -X GET "https://www.googleapis.com/books/v1/volumes?q=subject:Fiction&key=AIzaSyD3783cwb-UwTnNx1_5U7_JNBGKHHc8TTg"
+
+
+
