@@ -1,7 +1,10 @@
 import requests
+import os
+from dotenv import load_dotenv
 
-#Función para buscar los libros por el nombre del autor
+load_dotenv()
 
+# Función para buscar los libros por el nombre del autor
 def buscar_libros_por_autor(api_key, autor, start_index=0, max_results=5):
     url = f"https://www.googleapis.com/books/v1/volumes?q=inauthor:{autor}&startIndex={start_index}&maxResults={max_results}&key={api_key}"
     response = requests.get(url)
@@ -10,9 +13,7 @@ def buscar_libros_por_autor(api_key, autor, start_index=0, max_results=5):
     else:
         return {"error": response.json()}
 
-
-#Función que te devuelve los libros buscados del autor.
-
+# Función que te devuelve los libros buscados del autor.
 def mostrar_libros(datos, autor, start_index):
     if "items" in datos:
         autores_encontrados = set()
@@ -44,8 +45,7 @@ def mostrar_libros(datos, autor, start_index):
         print("No se encontraron resultados para el autor proporcionado.")
         return False
 
-#Función que te devuelve la descripción sobre un autor
-
+# Función que te devuelve la descripción sobre un autor
 def obtener_descripcion_autor(api_key, autor):
     start_index = 0
     max_results = 10
@@ -59,26 +59,27 @@ def obtener_descripcion_autor(api_key, autor):
         start_index += max_results
     return "No se encontró una biografía del autor en la información disponible."
 
-
-#Función principal del programa
-
+# Función principal del programa
 def main():
-    API_KEY = "AIzaSyD3783cwb-UwTnNx1_5U7_JNBGKHHc8TTg"
+    api_key = os.getenv('GOOGLE_BOOKS_API_KEY')
+    if not api_key:
+        print("La clave de API no está configurada. Por favor, establece la variable de entorno 'GOOGLE_BOOKS_API_KEY' en el archivo .env.")
+        return
 
     while True:
-        autor = input("Ingrese el nombre del autor o salir para cerrar el programa: ")
+        autor = input("Ingrese el nombre del autor o 'salir' para cerrar el programa: ")
         if autor.lower() == 'salir':
             print("Gracias por usar el programa. ¡Adiós!")
             break
 
-        descripcion_autor = obtener_descripcion_autor(API_KEY, autor)
+        descripcion_autor = obtener_descripcion_autor(api_key, autor)
         print(f"\nDescripción del autor '{autor}':\n{descripcion_autor}")
 
         ver_libros = input("¿Desea ver la lista de libros de este autor? (sí/no): ")
         if ver_libros.lower() == 'sí':
             start_index = 0
             while True:
-                datos = buscar_libros_por_autor(API_KEY, autor, start_index=start_index, max_results=5)
+                datos = buscar_libros_por_autor(api_key, autor, start_index=start_index, max_results=5)
                 if "error" in datos:
                     print("Error al buscar los libros:", datos["error"])
                     break
