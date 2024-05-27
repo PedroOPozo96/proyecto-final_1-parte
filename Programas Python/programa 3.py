@@ -1,8 +1,10 @@
 import requests
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
-#Función que busca los libros ingresando el género
-
+# Función que busca los libros ingresando el género
 def buscar_libros_por_genero(api_key, genero, start_index=0, max_results=5):
     url = f"https://www.googleapis.com/books/v1/volumes?q=subject:{genero}&startIndex={start_index}&maxResults={max_results}&key={api_key}"
     response = requests.get(url)
@@ -10,10 +12,8 @@ def buscar_libros_por_genero(api_key, genero, start_index=0, max_results=5):
         return response.json()
     else:
         return {"error": response.json()}
-    
 
 # Con esta función nos devuelve la edad dedicada del libro
-
 def es_infantil_o_juvenil(categorias, descripcion):
     if not categorias:
         categorias = []
@@ -33,9 +33,7 @@ def es_infantil_o_juvenil(categorias, descripcion):
     
     return "Adulto"
 
-
-#Esta función nos devuelve los libros cuando ingresamos un género 
-
+# Esta función nos devuelve los libros cuando ingresamos un género
 def mostrar_libros_por_genero(datos, genero, start_index):
     if "items" in datos:
         print(f"\nLibros en el género '{genero}':")
@@ -60,7 +58,10 @@ def mostrar_libros_por_genero(datos, genero, start_index):
         return False
 
 def main():
-    API_KEY = "AIzaSyD3783cwb-UwTnNx1_5U7_JNBGKHHc8TTg"
+    api_key = os.getenv('GOOGLE_BOOKS_API_KEY')
+    if not api_key:
+        print("La clave de API no está configurada. Por favor, establece la variable de entorno 'GOOGLE_BOOKS_API_KEY' en el archivo .env.")
+        return
 
     while True:
         genero = input("Ingrese el género de los libros que desea buscar (o 'salir' para terminar): ")
@@ -70,7 +71,7 @@ def main():
 
         start_index = 0
         while True:
-            datos = buscar_libros_por_genero(API_KEY, genero, start_index=start_index, max_results=5)
+            datos = buscar_libros_por_genero(api_key, genero, start_index=start_index, max_results=5)
             if "error" in datos:
                 print("Error al buscar los libros:", datos["error"])
                 break
